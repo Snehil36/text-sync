@@ -1,0 +1,204 @@
+:root {
+    --ink: #1a1a1a;
+    --muted: #8a8a8a;
+    --accent: #2a7de1;
+    --accent-hover: #1f66bd;
+    --border: #b9d4f0;
+    --border-bg: #f5f9fe;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 60px;
+    background: #ffffff;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+}
+
+h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 0 12px;
+}
+
+#description {
+    max-width: 420px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 40px;
+}
+
+#dropZone {
+    width: 280px;
+    padding: 32px 24px;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    background: var(--border-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#dropZone.drag-over {
+    border-color: var(--accent);
+    background: #eaf3fd;
+}
+
+#uploadIcon {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    margin-bottom: 18px;
+}
+
+#uploadBtn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 9px 28px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+#uploadBtn:hover {
+    background: var(--accent-hover);
+}
+
+#uploadBtn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+#dragText {
+    margin: 0 0 16px;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+#hintText {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
+
+/* Modal overlays (error + confirmation) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 10px;
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-box p {
+    margin: 0 0 20px;
+    font-size: 0.95rem;
+    color: var(--ink);
+    word-break: break-word;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+}
+
+.modal-btn.primary {
+    background: var(--accent);
+    color: white;
+}
+
+.modal-btn.primary:hover {
+    background: var(--accent-hover);
+}
+
+.modal-btn.secondary {
+    background: #eef0f2;
+    color: var(--ink);
+}
+
+.modal-btn.secondary:hover {
+    background: #e0e3e6;
+}
+
+/* Upload progress bar */
+#progressContainer {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#progressContainer.hidden {
+    display: none;
+}
+
+#progressTrack {
+    height: 14px;
+    /* width is set dynamically in JS based on file size, capped at a max */
+    background: #e8edf3;
+    border-radius: 999px; /* pill / capsule shape with rounded caps on each end */
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+#progressFill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.15s ease;
+}
+
+#progressSize {
+    margin: 8px 0 0;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
