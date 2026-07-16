@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Be Decided</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <h1>Page Shift</h1>
+    <p id="description">Upload a PDF of your textbook, and we'll return a corrected version where the PDF page numbers match the page numbers printed in the book.</p>
+
+    <div id="dropZone">
+        <svg id="uploadIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <button id="uploadBtn">Browse</button>
+        <p id="dragText">drag &amp; drop file here</p>
+        <p id="hintText">We support: .pdf</p>
+
+        <input type="file" id="fileInput" accept="application/pdf" hidden>
+    </div>
+
+    <!-- Error popup: shown when a non-PDF file is selected -->
+    <div id="errorModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <p>You must only upload a PDF</p>
+            <button id="errorOkBtn" class="modal-btn primary">OK</button>
+        </div>
+    </div>
+
+    <!-- Confirmation popup: shown after a valid PDF is selected -->
+    <div id="confirmModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <p id="confirmText"></p>
+            <div class="modal-actions">
+                <button id="confirmYesBtn" class="modal-btn primary">Yes</button>
+                <button id="confirmNoBtn" class="modal-btn secondary">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload progress bar -->
+    <div id="progressContainer" class="hidden">
+        <div id="progressTrack">
+            <div id="progressFill"></div>
+        </div>
+        <p id="progressSize"></p>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
