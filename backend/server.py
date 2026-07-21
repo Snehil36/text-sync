@@ -31,7 +31,7 @@ from werkzeug.utils import secure_filename
 # ── Import your existing pipeline functions directly (no subprocess) ──────────
 from find_toc import find_toc
 from parse_result import parse_response
-from shift_page import apply_page_labels
+from shift_page import apply_toc_metadata
 
 # ── App setup ─────────────────────────────────────────────────────────────────
 app = Flask(__name__)
@@ -114,7 +114,7 @@ def upload():
         # subprocess, so there is no shell injection surface here at all.
         response_text = find_toc(input_path)
         offset, toc, special_pages = parse_response(response_text)
-        apply_page_labels(input_path, offset, output_path=output_path)
+        apply_toc_metadata(input_path, offset, toc, output_path=output_path)
 
         # ── 6. Stream the corrected PDF back as a download ───────────────────
         # as_attachment=True tells the browser to save it rather than open it.
