@@ -27,6 +27,7 @@ import tempfile
 
 from flask import Flask, request, send_file, jsonify, abort, render_template_string, render_template
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ── Import your existing pipeline functions directly (no subprocess) ──────────
 from find_toc import find_toc
@@ -38,6 +39,14 @@ app = Flask(__name__)
 
 # Hard cap: reject any upload larger than 100 MB before it even hits your code.
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100 MB
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1,
+    x_proto=1,
+    x_host=1,
+    x_prefix=1
+)
 
 # Isolated temp directory — all uploads and outputs land here, never anywhere
 # derived from user-provided filenames.
