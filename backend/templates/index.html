@@ -3,28 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Be Decided</title>
+    <title>Text Sync</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <h1>Page Shift</h1>
-    <p id="description">Upload a PDF of your textbook, and we'll return a corrected version where the PDF page numbers match the page numbers printed in the book.</p>
-
-    <div id="dropZone">
-        <svg id="uploadIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-
-        <button id="uploadBtn">Browse</button>
-        <p id="dragText">drag &amp; drop file here</p>
-        <p id="hintText">We support: .pdf</p>
-
-        <input type="file" id="fileInput" accept="application/pdf" hidden>
+    <!-- Title card -->
+    <div id="titleCard">
+        <h1>Text Sync</h1>
+        <p id="description">Upload your textbook PDF and receive a corrected version with a fully linked table of contents — click any chapter or section in the sidebar and jump directly to that page.</p>
     </div>
 
-    <!-- Error popup: shown when a non-PDF file is selected -->
+    <!-- Upload card -->
+    <div id="uploadCard">
+        <div id="dropZone">
+            <svg id="uploadIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <button id="uploadBtn">Browse</button>
+            <p id="dragText">drag &amp; drop file here</p>
+            <p id="hintText">We support: .pdf</p>
+            <input type="file" id="fileInput" accept="application/pdf" hidden>
+        </div>
+
+        <!-- Progress bar inside upload card -->
+        <div id="progressContainer" class="hidden">
+            <div id="progressTrack">
+                <div id="progressFill"></div>
+            </div>
+            <p id="progressSize"></p>
+        </div>
+    </div>
+
+    <!-- Info card -->
+    <div id="infoCard">
+        <p id="sidebarDescription">The corrected PDF will include a fully linked table of contents in the PDF sidebar. No more manually calculating page numbers — simply click any chapter or section and jump directly to that page.</p>
+    </div>
+
+    <!-- Error popup -->
     <div id="errorModal" class="modal-overlay hidden">
         <div class="modal-box">
             <p>You must only upload a PDF</p>
@@ -32,7 +49,7 @@
         </div>
     </div>
 
-    <!-- Confirmation popup: shown after a valid PDF is selected -->
+    <!-- Confirmation popup -->
     <div id="confirmModal" class="modal-overlay hidden">
         <div class="modal-box">
             <p id="confirmText"></p>
@@ -41,14 +58,6 @@
                 <button id="confirmNoBtn" class="modal-btn secondary">No</button>
             </div>
         </div>
-    </div>
-
-    <!-- Upload progress bar -->
-    <div id="progressContainer" class="hidden">
-        <div id="progressTrack">
-            <div id="progressFill"></div>
-        </div>
-        <p id="progressSize"></p>
     </div>
 
     <script src="script.js"></script>

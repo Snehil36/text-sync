@@ -1,66 +1,98 @@
 :root {
-    --ink: #1a1a1a;
-    --muted: #8a8a8a;
+    --navy: #1a3a6b;
     --accent: #2a7de1;
     --accent-hover: #1f66bd;
     --border: #b9d4f0;
-    --border-bg: #f5f9fe;
+    --page-bg: #e8eef7;
+    --ink: #1a1a1a;
+    --muted: #6b7a99;
 }
 
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    margin: 0;
     min-height: 100vh;
+    background: var(--page-bg);
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 60px;
-    background: #ffffff;
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    color: var(--ink);
+    padding: 48px 16px 64px;
+    gap: 20px;
 }
 
-h1 {
-    font-size: 1.6rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    margin: 0 0 12px;
+/* ── Cards shared styles ──────────────────────────────────── */
+#titleCard,
+#uploadCard,
+#infoCard {
+    width: 100%;
+    max-width: 680px;
+    border-radius: 16px;
+}
+
+/* ── Title card ───────────────────────────────────────────── */
+#titleCard {
+    background: var(--navy);
+    padding: 48px 40px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(26, 58, 107, 0.2);
+}
+
+#titleCard h1 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin-bottom: 16px;
 }
 
 #description {
-    max-width: 420px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin: 0 0 40px;
+    font-size: clamp(0.88rem, 2vw, 1rem);
+    line-height: 1.7;
+    color: #b8ccee;
+    max-width: 480px;
+    margin: 0 auto;
 }
 
+/* ── Upload card ──────────────────────────────────────────── */
+#uploadCard {
+    background: #ffffff;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 24px rgba(26, 58, 107, 0.10);
+}
+
+/* ── Drop zone ────────────────────────────────────────────── */
 #dropZone {
-    width: 280px;
-    padding: 32px 24px;
+    width: 100%;
+    max-width: 480px;
+    padding: 40px 24px;
     border: 2px dashed var(--border);
-    border-radius: 10px;
-    background: var(--border-bg);
+    border-radius: 12px;
+    background: var(--page-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+    cursor: pointer;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 #dropZone.drag-over {
     border-color: var(--accent);
-    background: #eaf3fd;
+    background: #deeafb;
 }
 
 #uploadIcon {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     color: var(--accent);
     margin-bottom: 18px;
 }
@@ -69,11 +101,13 @@ h1 {
     background: var(--accent);
     color: white;
     border: none;
-    padding: 9px 28px;
-    border-radius: 6px;
-    font-size: 0.95rem;
+    padding: 10px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    transition: background-color 0.15s ease;
 }
 
 #uploadBtn:hover {
@@ -86,28 +120,70 @@ h1 {
 }
 
 #dragText {
-    margin: 0 0 16px;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--muted);
+    margin-bottom: 6px;
 }
 
 #hintText {
-    margin: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+#progressContainer {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#progressContainer.hidden {
+    display: none;
+}
+
+#progressTrack {
+    height: 14px;
+    background: #dde2ea;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+#progressFill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.15s ease;
+}
+
+#progressSize {
+    margin: 8px 0 0;
     font-size: 0.75rem;
     color: var(--muted);
 }
 
-@media (prefers-reduced-motion: reduce) {
-    * {
-        transition: none !important;
-    }
+/* ── Info card ────────────────────────────────────────────── */
+#infoCard {
+    background: var(--navy);
+    padding: 28px 40px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(26, 58, 107, 0.2);
 }
 
-/* Modal overlays (error + confirmation) */
+#sidebarDescription {
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    line-height: 1.65;
+    color: #b8ccee;
+}
+
+/* ── Modals ───────────────────────────────────────────────── */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,18 +197,19 @@ h1 {
 
 .modal-box {
     background: white;
-    border-radius: 10px;
-    padding: 24px;
-    max-width: 320px;
+    border-radius: 14px;
+    padding: 32px 28px;
+    max-width: 340px;
     width: 100%;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
 .modal-box p {
-    margin: 0 0 20px;
+    margin: 0 0 24px;
     font-size: 0.95rem;
     color: var(--ink);
+    line-height: 1.5;
     word-break: break-word;
 }
 
@@ -143,11 +220,14 @@ h1 {
 }
 
 .modal-btn {
-    padding: 9px 20px;
-    border-radius: 6px;
+    flex: 1;
+    padding: 10px 20px;
+    border-radius: 8px;
     font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
     border: none;
+    transition: background-color 0.15s ease;
 }
 
 .modal-btn.primary {
@@ -168,37 +248,30 @@ h1 {
     background: #e0e3e6;
 }
 
-/* Upload progress bar */
-#progressContainer {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 480px) {
+    body {
+        padding: 24px 12px 48px;
+        gap: 14px;
+    }
+
+    #titleCard {
+        padding: 36px 24px;
+    }
+
+    #uploadCard {
+        padding: 28px 16px;
+    }
+
+    #infoCard {
+        padding: 24px 20px;
+    }
+
+    #uploadBtn {
+        width: 100%;
+    }
 }
 
-#progressContainer.hidden {
-    display: none;
-}
-
-#progressTrack {
-    height: 14px;
-    /* width is set dynamically in JS based on file size, capped at a max */
-    background: #e8edf3;
-    border-radius: 999px; /* pill / capsule shape with rounded caps on each end */
-    overflow: hidden;
-    border: 1px solid var(--border);
-}
-
-#progressFill {
-    height: 100%;
-    width: 0%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 0.15s ease;
-}
-
-#progressSize {
-    margin: 8px 0 0;
-    font-size: 0.75rem;
-    color: var(--muted);
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
 }
