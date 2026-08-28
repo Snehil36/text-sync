@@ -174,4 +174,4 @@ if __name__ == "__main__":
     # debug=False in all cases — debug mode exposes an interactive Python
     # console in the browser on errors, which is a severe security risk even
     # on a local server if anyone else on your network can reach the port.
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=8000, debug=False)

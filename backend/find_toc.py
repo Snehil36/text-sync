@@ -1,11 +1,20 @@
 from google import genai
+from google.genai import types
 import pymupdf
 import os
 
-client = genai.Client(api_key=os.getenv("PDF_OFFSETTER"))
 
 def find_toc(pdf_path):
 
+    # FORCE USE OF GLOBAL GOOGLE SERVERS: Stops the SDK from detecting AWS 
+    # environment variables and generating a corrupt cloud network path.
+    # uses HTTP Option object class to prevent python from crashing on setup
+    client = genai.Client(api_key=os.getenv("PDF_OFFSETTER"),
+                          http_options=types.HttpOptions(api_version='v1',
+                          timeout=120000 # gives 120 seconds for pdf uploading
+                          )
+                        )   
+                    
     doc = pymupdf.open(pdf_path)
 
     # Incase pdf is over the max page size of 100 just takes first 50

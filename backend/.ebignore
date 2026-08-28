@@ -1,0 +1,7 @@
+virt/
+venv/
+__pycache__/
+_tmp/
+aws-elastic-beanstalk-cli/
+.elasticbeanstalk/
+.DS_Store
