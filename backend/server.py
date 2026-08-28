@@ -27,17 +27,26 @@ import tempfile
 
 from flask import Flask, request, send_file, jsonify, abort, render_template_string, render_template
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ── Import your existing pipeline functions directly (no subprocess) ──────────
 from find_toc import find_toc
 from parse_result import parse_response
-from shift_page import apply_page_labels
+from shift_page import apply_toc_metadata
 
 # ── App setup ─────────────────────────────────────────────────────────────────
 app = Flask(__name__)
 
 # Hard cap: reject any upload larger than 100 MB before it even hits your code.
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100 MB
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1,
+    x_proto=1,
+    x_host=1,
+    x_prefix=1
+)
 
 # Isolated temp directory — all uploads and outputs land here, never anywhere
 # derived from user-provided filenames.
@@ -114,7 +123,7 @@ def upload():
         # subprocess, so there is no shell injection surface here at all.
         response_text = find_toc(input_path)
         offset, toc, special_pages = parse_response(response_text)
-        apply_page_labels(input_path, offset, output_path=output_path)
+        apply_toc_metadata(input_path, offset, toc, output_path=output_path)
 
         # ── 6. Stream the corrected PDF back as a download ───────────────────
         # as_attachment=True tells the browser to save it rather than open it.
@@ -165,4 +174,4 @@ if __name__ == "__main__":
     # debug=False in all cases — debug mode exposes an interactive Python
     # console in the browser on errors, which is a severe security risk even
     # on a local server if anyone else on your network can reach the port.
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=8000, debug=False)
