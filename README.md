@@ -1,3 +1,60 @@
+# Text Sync
+
+A web tool that fixes one of the most frustrating problems with textbook PDFs: the page numbers don't match.
+
+When you open a textbook PDF, the cover is page 1, followed by roman numeral front matter — by the time you reach the actual content, the PDF page number is much higher than the printed page number in the book. Every time you want to navigate to a specific page, you have to do mental arithmetic.
+
+**Text Sync solves this.** Upload your textbook PDF and receive a corrected version with a fully linked table of contents. Click any chapter or section in the PDF sidebar and jump directly to the right page — no calculations needed.
+
+---
+
+## How It Works
+
+1. You upload a textbook PDF through the website
+2. Text Sync extracts the first 50 pages and sends them to Google Gemini AI
+3. Gemini reads the table of contents and returns all chapter titles with their printed page numbers
+4. The offset between PDF page numbers and printed page numbers is calculated
+5. The corrected table of contents is written directly into the PDF's metadata — every chapter and subsection with the correct hierarchy level
+6. The corrected PDF is returned as a download
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python, Flask |
+| PDF parsing | PyMuPDF |
+| AI | Google Gemini 2.5 Flash API |
+| Hosting | AWS Elastic Beanstalk |
+| Web server | Nginx + Gunicorn |
+
+---
+
+## Project Structure
+
+```
+textsync/
+├── server.py             ← Flask server and API routes
+├── find_toc.py           ← Uploads PDF to Gemini, returns TOC as JSON
+├── parse_result.py       ← Parses Gemini response, calculates page offset
+├── shift_page.py         ← Writes corrected TOC into PDF metadata
+├── requirements.txt      ← Python dependencies
+├── Procfile              ← Gunicorn startup command for AWS
+├── .platform/
+│   └── nginx/
+│       └── conf.d/
+│           ├── proxy.conf    ← Raises Nginx upload size limit to 50MB
+│           └── timeout.conf  ← Extends proxy timeouts to 5 minutes
+├── templates/
+│   └── index.html        ← Frontend HTML
+└── static/
+    ├── css/
+    │   └── style.css     ← Styling
+    └── js/
+        └── script.js     ← Upload logic, validation, progress bar
+```
 
 ---
 
@@ -31,11 +88,54 @@ Then open `http://127.0.0.1:5000` in any browser — Chrome, Firefox, Safari, Ed
 
 ---
 
+## Deployment
+
+Text Sync is deployed on **AWS Elastic Beanstalk** using a production-grade stack:
+
+**Architecture:**
+```
+Internet
+    ↓
+AWS Application Load Balancer
+    ↓
+Nginx (reverse proxy on EC2)
+    ↓
+Gunicorn (WSGI server)
+    ↓
+Flask application
+    ↓
+Google Gemini API
+```
+
+**Key production configurations:**
+
+- **Gunicorn** serves the Flask app with a 120 second worker timeout to handle long-running Gemini API calls
+- **Nginx** is configured with a 50MB upload limit (`client_max_body_size 50M`) and 5 minute proxy timeouts to prevent large PDF uploads from being rejected
+- **Gemini client** uses `api_version='v1'` and a 120 second SDK timeout to prevent network path corruption on AWS infrastructure
+- **Environment variables** are stored securely using `eb setenv` — the API key is never hardcoded or committed to the repository
+- **ProxyFix middleware** ensures Flask correctly reads headers forwarded through the AWS load balancer
+
+**To deploy your own instance:**
+```bash
+# Install EB CLI
+pip install awsebcli
+
+# Initialize and deploy
+eb init
+eb create your-env-name
+eb setenv PDF_OFFSETTER="your-gemini-api-key"
+eb deploy
+```
+
+**Note:** HTTPS will be enabled once a custom domain is configured via AWS Route 53 and ACM (AWS Certificate Manager).
+
+---
+
 ## Security
 
 - File type validated by magic bytes (`%PDF`), not just filename extension
 - Filename sanitized with `werkzeug.secure_filename()` — prevents path traversal attacks
-- Upload size capped at 100MB
+- Upload size capped at 100MB at the Flask layer
 - Temp files stored using UUIDs, never paths derived from user input
 - All pipeline calls are direct Python functions — no subprocess, no shell injection surface
 - Generic error responses — no internal details exposed to the client
